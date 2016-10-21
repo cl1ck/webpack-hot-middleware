@@ -33,7 +33,7 @@ Next, enable hot reloading in your webpack config:
     Occurence ensures consistent build hashes, hot module replacement is
     somewhat self-explanatory, no errors is used to handle errors more cleanly.
 
- 3. Add `'webpack-hot-middleware/client'` into the `entry` array.
+ 3. Add `'webpack-hot-middleware/client?port=3000'` into the `entry` array.
     This connects to the server to receive notifications when the bundle
     rebuilds and then updates your client bundle accordingly.
 
@@ -55,9 +55,9 @@ Now attach it to your server:
 
  2. Add `webpack-hot-middleware` attached to the same compiler instance
     ```js
-    require("webpack-hot-middleware")(server, compiler, {
-        path: '/__webpack_hmr',
-        log: console.log
+    require("webpack-hot-middleware")(compiler, {
+        log: console.log,
+        port: 3000
     });
     ```
 
@@ -67,10 +67,13 @@ And you're all set!
 
 ### 2.1.0
 
-**Breaking Change**
-
 As of version 2.1.0, despite it's name `webpack-hot-middleware` is no longer a middleware.
-Instead it attaches socket.io to the http(s) server instance. The main advantage of using socket.io is browser support which goes as low as Internet Explorer 5.5.
+Instead, it spawns a socket.io server instance to communicate with the client. The main advantage of using socket.io is browser support which goes as low as Internet Explorer 5.5.
+
+For reasons of backward compatibility you can still attach it as a middleware though:
+```js
+app.use(require("webpack-hot-middleware")(compiler));
+```
 
 ### 2.0.0
 

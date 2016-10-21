@@ -1,5 +1,5 @@
 var webpack = require('webpack');
-var hotMiddlewareScript = 'webpack-hot-middleware/client?path=/__webpack_hmr&reload=true';
+var hotMiddlewareScript = 'webpack-hot-middleware/client?port=3000';
 
 module.exports = {
   context: __dirname,
