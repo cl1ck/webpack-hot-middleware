@@ -1,7 +1,7 @@
 {
-  "name": "webpack-hot-middleware",
-  "version": "2.13.0",
-  "description": "Webpack hot reloading you can attach to your own server",
+  "name": "webpack-hot-socket-server",
+  "version": "1.0.0",
+  "description": "Use socket.io for webpack hot reloading with your own dev server",
   "keywords": [
     "webpack",
     "hmr",
@@ -9,8 +9,9 @@
     "module",
     "reloading",
     "hot-reloading",
-    "middleware",
-    "express"
+    "express",
+    "websocket",
+    "socket.io"
   ],
   "main": "server.js",
   "scripts": {
@@ -19,9 +20,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/glenjamin/webpack-hot-middleware.git"
+    "url": "https://github.com/cl1ck/webpack-hot-socket-server"
   },
-  "author": "Glen Mailer <glen@stainlessed.co.uk>",
+  "author": "Michel Hofmann <cl1ck@cl1ck0ne.net>",
   "license": "MIT",
   "dependencies": {
     "ansi-html": "0.0.5",

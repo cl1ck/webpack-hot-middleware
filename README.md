@@ -103,6 +103,7 @@ entry: {
 ## License
 
 Based on [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) Copyright 2015 Glen Mailer
+
 All Changes since including Oct. 18 2016 Copyright 2016 Michel Hofmann
 
 MIT Licensed.
