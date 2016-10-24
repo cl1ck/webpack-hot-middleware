@@ -5,7 +5,7 @@ var assert = require('assert');
 var sinon = require('sinon');
 
 var io = require('socket.io-client');
-var webpackHotMiddleware = require('../middleware');
+var socketServer = require('../server');
 
 describe("middleware", function() {
   var s, compiler, app, server, middleware, client;
@@ -119,7 +119,7 @@ describe("middleware", function() {
   });
   function startServer(opts) {
     return function() {
-      middleware = webpackHotMiddleware(compiler, opts);
+      middleware = socketServer(compiler, opts);
     };
   }
   function stopServer() {

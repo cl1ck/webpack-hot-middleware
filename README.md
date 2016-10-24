@@ -1,19 +1,19 @@
-# Webpack Hot Middleware
+# Webpack Hot Socket Server
 
-Webpack hot reloading using only [webpack-dev-middleware](http://webpack.github.io/docs/webpack-dev-middleware.html). This allows you to add hot reloading into an existing server without [webpack-dev-server](http://webpack.github.io/docs/webpack-dev-server.html).
+Webpack hot reloading using only [webpack-dev-middleware](http://webpack.github.io/docs/webpack-dev-middleware.html).
+This allows you to add a socket.io hot reloading channel to an existing server.
 
 This module is **only** concerned with the mechanisms to connect a browser client to a webpack server & receive updates. It will subscribe to changes from the server and execute those changes using [webpack's HMR api](http://webpack.github.io/docs/hot-module-replacement-with-webpack.html). Actually making your application capable of using hot reloading to make seamless changes is out of scope, and usually handled by another library.
 
-[![npm version](https://img.shields.io/npm/v/webpack-hot-middleware.svg)](https://www.npmjs.com/package/webpack-hot-middleware) [![Build Status](https://img.shields.io/travis/glenjamin/webpack-hot-middleware/master.svg)](https://travis-ci.org/glenjamin/webpack-hot-middleware) [![Coverage Status](https://coveralls.io/repos/glenjamin/webpack-hot-middleware/badge.svg?branch=master)](https://coveralls.io/r/glenjamin/webpack-hot-middleware?branch=master) ![MIT Licensed](https://img.shields.io/npm/l/webpack-hot-middleware.svg)
 
 ## Installation & Usage
 
 See [example/](./example/) for an example of usage.
 
-First, install the npm module.
+First, install the module:
 
 ```sh
-npm install --save-dev webpack-hot-middleware
+npm install --save-dev https://github.com/cl1ck/webpack-hot-socket-server.git
 ```
 
 Next, enable hot reloading in your webpack config:
@@ -21,10 +21,7 @@ Next, enable hot reloading in your webpack config:
  1. Add the following three plugins to the `plugins` array:
     ```js
     plugins: [
-        // Webpack 1.0
-        new webpack.optimize.OccurenceOrderPlugin(),
-        // Webpack 2.0 fixed this mispelling
-        // new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoErrorsPlugin()
     ]
@@ -33,7 +30,8 @@ Next, enable hot reloading in your webpack config:
     Occurence ensures consistent build hashes, hot module replacement is
     somewhat self-explanatory, no errors is used to handle errors more cleanly.
 
- 3. Add `'webpack-hot-middleware/client?port=3000'` into the `entry` array.
+ 3. Add `'webpack-hot-middleware/client?host=localhost&port=3000'` into the `entry` array.
+
     This connects to the server to receive notifications when the bundle
     rebuilds and then updates your client bundle accordingly.
 
@@ -53,9 +51,9 @@ Now attach it to your server:
     }));
     ```
 
- 2. Add `webpack-hot-middleware` attached to the same compiler instance
+ 2. Add `webpack-hot-socket-server` attached to the same compiler instance
     ```js
-    require("webpack-hot-middleware")(compiler, {
+    require("webpack-hot-socket-server")(compiler, {
         log: console.log,
         port: 3000
     });
@@ -63,68 +61,29 @@ Now attach it to your server:
 
 And you're all set!
 
-## Changelog
-
-### 2.1.0
-
-As of version 2.1.0, despite it's name `webpack-hot-middleware` is no longer a middleware.
-Instead, it spawns a socket.io server instance to communicate with the client. The main advantage of using socket.io is browser support which goes as low as Internet Explorer 5.5.
-
-For reasons of backward compatibility you can still attach it as a middleware though:
-```js
-app.use(require("webpack-hot-middleware")(compiler));
-```
-
-### 2.0.0
-
-**Breaking Change**
-
-As of version 2.0.0, all client functionality has been rolled into this module. This means that you should remove any reference to `webpack/hot/dev-server` or `webpack/hot/only-dev-server` from your webpack config. Instead, use the `reload` config option to control this behaviour.
-
-This was done to allow full control over the client receiving updates, which is now able to output full module names in the console when applying changes.
-
-## Documentation
-
-More to come soon, you'll have to mostly rely on the example for now.
-
 ### Config
 
 Configuration options can be passed to the client by adding querystring parameters to the path in the webpack config.
 
 ```js
-'webpack-hot-middleware/client?path=/__what&&overlay=false'
+'webpack-hot-middleware/client?port=3000&host=localhost&overlay=false'
 ```
 
-* **path** - The path which the middleware is serving the event stream on
+* **port** - The port which the socket.io server is listening to
+* **host** - The host which the socket.io server is listening to (if not provided it'll use origin)
 * **overlay** - Set to `false` to disable the DOM-based client-side overlay.
 * **reload** - Set to `true` to auto-reload the page when webpack gets stuck.
 * **noInfo** - Set to `true` to disable informational console logging.
 * **quiet** - Set to `true` to disable all console logging.
-* **dynamicPublicPath** - Set to `true` to use webpack `publicPath` as prefix of `path`. (We can set `__webpack_public_path__` dynamically at runtime in the entry point, see note of [output.publicPath](https://webpack.github.io/docs/configuration.html#output-publicpath))
 
 ## How it Works
 
 The middleware installs itself as a webpack plugin, and listens for compiler events.
-
-Each connected client gets a [Server Sent Events](http://www.html5rocks.com/en/tutorials/eventsource/basics/) connection, the server will publish notifications to connected clients on compiler events.
+The server will then publish notifications to connected clients on compiler events.
 
 When the client receives a message, it will check to see if the local code is up to date. If it isn't up to date, it will trigger webpack hot module reloading.
 
-## Other Frameworks
-
-### Hapi
-
-Use the [hapi-webpack-plugin](https://www.npmjs.com/package/hapi-webpack-plugin).
-
-### Koa
-
-Use [koa-webpack-middleware](https://www.npmjs.com/package/koa-webpack-middleware), which wraps this module and makes it work with koa.
-
 ## Troubleshooting
-
-### Not receiving updates in client when using Gzip
-
-This is because gzip generally buffers the response, but the Server Sent Events event-stream expects to be able to send data to the client immediately. You should make sure gzipping isn't being applied to the event-stream. See [issue #10](https://github.com/glenjamin/webpack-hot-middleware/issues/10).
 
 ### Use with auto-restarting servers
 
@@ -136,13 +95,14 @@ If you want to use [multiple entry points in your webpack config](https://webpac
 
 ```js
 entry: {
-    vendor: ['jquery', 'webpack-hot-middleware/client'],
-    index: ['./src/index', 'webpack-hot-middleware/client']
+    vendor: ['jquery', 'webpack-hot-middleware/client?port=3000&'],
+    index: ['./src/index', 'webpack-hot-middleware/client?port=3000&']
 }
 ```
 
 ## License
 
-Copyright 2015 Glen Mailer.
+Based on [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) Copyright 2015 Glen Mailer
+All Changes since including Oct. 18 2016 Copyright 2016 Michel Hofmann
 
-MIT Licened.
+MIT Licensed.
