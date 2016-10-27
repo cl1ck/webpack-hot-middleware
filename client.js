@@ -40,11 +40,7 @@ if (typeof window === 'undefined') {
 }
 
 function connect() {
-  var uri = parse(options.path);
-  var host = uri.host ? uri.host : window.location.hostname;
-  var protocol = uri.protocol ? uri.protocol : window.location.protocol;
-
-  var socketServer = protocol + "//" + host + ":" + options.port;
+  var socketServer = window.location.protocol + "//" + window.location.hostname + ":" + options.port;
 
   var socket = io.connect(socketServer, {
     timeout: options.timeout
