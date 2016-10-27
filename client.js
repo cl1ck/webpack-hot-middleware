@@ -1,7 +1,7 @@
 /*eslint-env browser*/
 /*global __resourceQuery __webpack_public_path__*/
 
-var io = require('socket.io-client');
+var io = require('socket.io-client/socket.io');
 
 var options = {
   port: 3000,
