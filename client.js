@@ -2,7 +2,6 @@
 /*global __resourceQuery __webpack_public_path__*/
 
 var io = require('socket.io-client');
-var parse = require('parse-uri');
 
 var options = {
   port: 3000,
