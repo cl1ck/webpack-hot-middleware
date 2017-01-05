@@ -10,7 +10,8 @@ var options = {
   overlay: true,
   reload: false,
   log: true,
-  warn: true
+  warn: true,
+  delayReload: 1000,
 };
 if (__resourceQuery) {
   var querystring = require('querystring');
@@ -20,6 +21,7 @@ if (__resourceQuery) {
   if (overrides.timeout) options.timeout = overrides.timeout;
   if (overrides.overlay) options.overlay = overrides.overlay !== 'false';
   if (overrides.reload) options.reload = overrides.reload !== 'false';
+  if (overrides.delayReload) options.delayReload = overrides.delayReload;
   if (overrides.noInfo && overrides.noInfo !== 'false') {
     options.log = false;
   }

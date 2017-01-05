@@ -125,8 +125,10 @@ module.exports = function(hash, moduleMap, options) {
 
   function performReload() {
     if (reload) {
-      if (options.warn) console.warn("[HMR] Reloading page");
-      window.location.reload();
+      if (options.warn) console.warn("[HMR] Reloading page in " + options.delayReload + "ms");
+      setTimeout(function reload() {
+        window.location.reload();
+      }, options.delayReload);
     }
   }
 };

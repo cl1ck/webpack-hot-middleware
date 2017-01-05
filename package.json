@@ -1,6 +1,6 @@
 {
   "name": "webpack-hot-socket-server",
-  "version": "3.0.3",
+  "version": "3.1.0",
   "description": "Use socket.io for webpack hot reloading with your own dev server",
   "keywords": [
     "webpack",
