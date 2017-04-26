@@ -11,7 +11,7 @@ var options = {
   reload: false,
   log: true,
   warn: true,
-  delayReload: 1000,
+  delayReload: 0,
 };
 if (__resourceQuery) {
   var querystring = require('querystring');
